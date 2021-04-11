@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Getter@Setter@EqualsAndHashCode(of = "id")
-@Builder@NoArgsConstructor
+@Builder@AllArgsConstructor@NoArgsConstructor
 public class Account {
 
     @Id @GeneratedValue
