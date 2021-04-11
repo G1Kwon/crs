@@ -2,8 +2,6 @@ package cafe.review.account;
 
 import cafe.review.domain.Account;
 import lombok.RequiredArgsConstructor;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
@@ -49,7 +47,7 @@ public class AccountController {
     @GetMapping("/check-email-token")
     public String checkEmailToken(String token, String email, Model model) {
         Account account = accountRepository.findByEmail(email);
-        String view = "account/checked-Email";
+        String view = "account/checked-email";
         if (account == null) {
             model.addAttribute("error", "wrong email");
             return view;
@@ -58,8 +56,7 @@ public class AccountController {
             model.addAttribute("error", "wrong token");
             return view;
         }
-        account.setEmailVerified(true);
-        account.setJoinedAt(LocalDateTime.now());
+        account.completeSignUp();
         model.addAttribute("numberOfUser", accountRepository.count());
         model.addAttribute("nickname", account.getNickname());
         return view;
