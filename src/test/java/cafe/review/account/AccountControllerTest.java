@@ -1,5 +1,6 @@
 package cafe.review.account;
 
+import cafe.review.domain.Account;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -61,6 +62,9 @@ class AccountControllerTest {
                 .with(csrf()))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name("redirect:/"));
+        Account account = accountRepository.findByEmail("g1.kwon@hyundai-autoever.com");
+        assertNotNull(account);
+        assertNotEquals(account.getPassword(), "12345678");
         assertTrue(accountRepository.existsByEmail("g1.kwon@hyundai-autoever.com"));
         then(javaMailSender).should().send(any(SimpleMailMessage.class));
     }
