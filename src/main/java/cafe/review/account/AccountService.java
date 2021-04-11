@@ -7,6 +7,7 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -17,7 +18,9 @@ public class AccountService {
     private final PasswordEncoder passwordEncoder;
 
 
+    @Transactional
     public void processNewAccount(SignUpForm signUpForm) {
+        //detached 상태가 아닌 persist 상태를 만들기 위해 @Transactional 로 만들었다.
         Account newAccount = saveNewAccount(signUpForm);
         newAccount.generateEmailCheckToken();
         sendSignUpConfirmEmail(newAccount);
@@ -32,6 +35,7 @@ public class AccountService {
                 .cafeEnrollmentResultByWeb(true)
                 .cafeUpdatedByWeb(true)
                 .build();
+        //persist 상태
         Account newAccount = accountRepository.save(account);
         return newAccount;
     }
