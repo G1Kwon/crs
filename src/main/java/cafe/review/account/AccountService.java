@@ -57,7 +57,8 @@ public class AccountService {
 
     public void login(Account account) {
         UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
-                account.getNickname(),
+                //account.getNickname(),
+                new UserAccount(account), //principal 객체가 되서 로그인 되면 account 객체가 인증된 principal 로 간주됨
                 account.getPassword(), //정석은 이게 아니지만 평문 비밀번호는 사용하지 않을거라 이렇게 작성
                 List.of(new SimpleGrantedAuthority("ROLE_USER")));
         SecurityContextHolder.getContext().setAuthentication(token);

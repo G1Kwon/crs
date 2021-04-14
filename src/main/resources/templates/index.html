@@ -4,8 +4,10 @@
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head th:replace="fragments.html :: head"></head>
 <body class="bg-light">
-
 <div th:replace="fragments.html :: main-nav"></div>
+<div class="alert alert-warning" role="alert" th:if="${account != null && !account.emailVerified}">
+    카페 리뷰 시스템 가입을 완료하려면 <a href="#" th:href="@{/check-email}" class="alert-link">계정 인증 이메일을 확인</a>하세요.
+</div>
 
 <div class="container">
     <div class="py-5 text-center">
@@ -13,15 +15,11 @@
     </div>
 
     <div th:replace="fragments.html :: footer"></div>
-    <div class="alert alert-warning" role="alert" th:if="${account != null && !account.emailVerified}">
-        카페 리뷰 시스템 가입을 완료하려면 <a href="#" th:href="@{/check-email}" class="alert-link">계정 인증 이메일을 확인</a>하세요.
-    </div>
 </div>
 <script type="application/javascript">
         (function () {
 
         }())
-
 </script>
 </body>
 </html>
