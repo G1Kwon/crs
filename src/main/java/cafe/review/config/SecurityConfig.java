@@ -19,7 +19,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         //아래 예외처리를 해서 url 들에 대해 인증을 하지 않아도 사용이 가능하지만
         //폼데이터의 csrf 토큰은 무조건 있어야 한다.
         http.authorizeRequests()
-                .mvcMatchers("/", "/login", "/sign-up", "/check-email", "check-email-token",
+                .mvcMatchers("/", "/login", "/sign-up", "check-email-token",
                         "/email-login", "/check-email-login", "/login-link").permitAll()
                 .mvcMatchers(HttpMethod.GET, "/profile/*").permitAll()
                 .anyRequest().authenticated();
