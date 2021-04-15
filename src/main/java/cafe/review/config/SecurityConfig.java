@@ -23,6 +23,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/email-login", "/check-email-login", "/login-link").permitAll()
                 .mvcMatchers(HttpMethod.GET, "/profile/*").permitAll()
                 .anyRequest().authenticated();
+        //로그인/아웃 처리는 스프링 시큐리티가 한다.
+        http.formLogin()
+                .loginPage("/login").permitAll();
+        http.logout()
+                .logoutSuccessUrl("/");
     }
 
     @Override
