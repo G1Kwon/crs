@@ -1,6 +1,7 @@
 package cafe.review.account;
 
 import cafe.review.domain.Account;
+import cafe.review.settings.Profile;
 import lombok.RequiredArgsConstructor;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -81,5 +82,16 @@ public class AccountService implements UserDetailsService {
     public void completeSignup(Account account) {
         account.completeSignUp();
         login(account);
+    }
+
+    public void updateProfile(Account account, Profile profile) {
+        account.setUrl(profile.getUrl());
+        account.setOccupation(profile.getOccupation());
+        account.setBio(profile.getBio());
+        account.setLocation(profile.getLocation());
+        // TODO 프로필 이미지
+        //Detached 객체를 기존과 merge
+        accountRepository.save(account);
+        // TODO 문제가 하나 더 남았습니다.
     }
 }
