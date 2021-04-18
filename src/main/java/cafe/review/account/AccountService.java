@@ -36,20 +36,14 @@ public class AccountService implements UserDetailsService {
     public Account processNewAccount(SignUpForm signUpForm) {
         //detached 상태가 아닌 persist 상태를 만들기 위해 @Transactional 로 만들었다.
         Account newAccount = saveNewAccount(signUpForm);
-        newAccount.generateEmailCheckToken();
         sendSignUpConfirmEmail(newAccount);
         return newAccount;
     }
 
     private Account saveNewAccount(SignUpForm signUpForm) {
-        Account account = Account.builder()
-                .email(signUpForm.getEmail())
-                .nickname(signUpForm.getNickname())
-                .password(passwordEncoder.encode(signUpForm.getPassword()))
-                .cafeCreatedByWeb(true)
-                .cafeEnrollmentResultByWeb(true)
-                .cafeUpdatedByWeb(true)
-                .build();
+        signUpForm.setPassword(passwordEncoder.encode(signUpForm.getPassword()));
+        Account account = modelMapper.map(signUpForm, Account.class);
+        account.generateEmailCheckToken();
         //persist 상태
         Account newAccount = accountRepository.save(account);
         return newAccount;
