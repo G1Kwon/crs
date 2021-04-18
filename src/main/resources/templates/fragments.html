@@ -2,26 +2,27 @@
 <html lang="en"
       xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
 <head th:fragment="head">
     <meta charset="UTF-8">
     <title>Cafe Review System</title>
-    <link rel="stylesheet" href="/node_modules/bootstrap/dist/css/bootstrap.min.css"/>
-    <link rel="stylesheet" href="/node_modules/font-awesome/css/font-awesome.min.css"/>
+    <link rel="stylesheet" href="/node_modules/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="/node_modules/font-awesome/css/font-awesome.min.css" />
     <script src="/node_modules/jquery/dist/jquery.min.js"></script>
     <script src="/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="/node_modules/jdenticon/dist/jdenticon.min.js"></script><!--.js는 위와 달리 태그 닫는 것을 축약하면 안된다.-->
+    <script src="/node_modules/jdenticon/dist/jdenticon.min.js"></script>
     <style>
         .container {
             max-width: 100%;
         }
     </style>
 </head>
+
 <nav th:fragment="main-nav" class="navbar navbar-expand-sm navbar-dark bg-dark">
     <a class="navbar-brand" href="/" th:href="@{/}">
-        <img src="/images/008-cappuccino.png" width="30" height="30">
+        <img src="/images/007-cappuccino.png" width="30" height="30">
     </a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
-            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
 
@@ -29,8 +30,7 @@
         <ul class="navbar-nav mr-auto">
             <li class="nav-item">
                 <form th:action="@{/search/cafe}" class="form-inline" method="get">
-                    <input class="form-control mr-sm-2" name="keyword" type="search" placeholder="카페 찾기"
-                           aria-label="Search"/>
+                    <input class="form-control mr-sm-2" name="keyword" type="search" placeholder="카페 찾기" aria-label="Search" />
                 </form>
             </li>
         </ul>
@@ -49,21 +49,23 @@
             </li>
             <li class="nav-item" sec:authorize="isAuthenticated()">
                 <a class="nav-link btn btn-outline-primary" th:href="@{/notifications}">
-                    <i class="fa fa-plus" aria-hidden="true"></i> 카페 리뷰 작성
+                    <i class="fa fa-plus" aria-hidden="true"></i> 카페 리뷰 등록
                 </a>
             </li>
             <li class="nav-item dropdown" sec:authorize="isAuthenticated()">
                 <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown"
                    aria-haspopup="true" aria-expanded="false">
-                    <svg data-jdenticon-value="user127" th:data-jdenticon-value="${#authentication.name}"
+                    <svg th:if="${#strings.isEmpty(account?.profileImage)}" th:data-jdenticon-value="${#authentication.name}"
                          width="24" height="24" class="rounded border bg-light"></svg>
+                    <img th:if="${!#strings.isEmpty(account?.profileImage)}" th:src="${account.profileImage}"
+                         width="24" height="24" class="rounded border"/>
                 </a>
                 <div class="dropdown-menu dropdown-menu-sm-right" aria-labelledby="userDropdown">
                     <h6 class="dropdown-header">
                         <span sec:authentication="name">Username</span>
                     </h6>
                     <a class="dropdown-item" th:href="@{'/profile/' + ${#authentication.name}}">프로필</a>
-                    <a class="dropdown-item">카페 리뷰</a>
+                    <a class="dropdown-item" >카페</a>
                     <div class="dropdown-divider"></div>
                     <a class="dropdown-item" href="#" th:href="@{'/settings/profile'}">설정</a>
                     <form class="form-inline my-2 my-lg-0" action="#" th:action="@{/logout}" method="post">
@@ -76,10 +78,10 @@
 </nav>
 
 <footer th:fragment="footer">
-  <div class="row justify-content-center">
-    <img class="mb-2" src="/images/007-cappuccino.png" alt="" width="25">
-    <small class="d-block mb-3 text-muted">&copy; 2021</small>
-  </div>
+    <div class="row justify-content-center">
+        <img class="mb-2" src="/images/008-cappuccino.png" alt="" width="25">
+        <small class="d-block mb-3 text-muted">&copy; 2021</small>
+    </div>
 </footer>
 
 <div th:fragment="settings-menu (currentMenu)" class="list-group">
@@ -112,4 +114,5 @@
         }, false)
     }())
 </script>
+
 </html>
