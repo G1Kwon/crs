@@ -1,4 +1,4 @@
-package cafe.review.settings;
+package cafe.review.settings.form;
 
 import lombok.Data;
 

@@ -1,5 +1,7 @@
-package cafe.review.account;
+package cafe.review.account.validator;
 
+import cafe.review.account.AccountRepository;
+import cafe.review.account.form.SignUpForm;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;

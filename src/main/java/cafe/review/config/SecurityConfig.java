@@ -31,7 +31,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
         //폼데이터의 csrf 토큰은 무조건 있어야 한다.
         http.authorizeRequests()
                 .mvcMatchers("/", "/login", "/sign-up", "check-email-token",
-                        "/email-login", "/check-email-login", "/login-link").permitAll()
+                        "/email-login", "/check-email-login", "/login-link", "login-by-email").permitAll()
                 .mvcMatchers(HttpMethod.GET, "/profile/*").permitAll()
                 .anyRequest().authenticated();
         //로그인/아웃 처리는 스프링 시큐리티가 한다.

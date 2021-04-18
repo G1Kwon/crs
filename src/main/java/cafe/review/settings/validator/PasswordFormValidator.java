@@ -1,5 +1,6 @@
-package cafe.review.settings;
+package cafe.review.settings.validator;
 
+import cafe.review.settings.form.PasswordForm;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
