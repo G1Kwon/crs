@@ -4,6 +4,7 @@ import cafe.review.domain.Account;
 import cafe.review.settings.Notifications;
 import cafe.review.settings.Profile;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -26,6 +27,7 @@ public class AccountService implements UserDetailsService {
     private final AccountRepository accountRepository;
     private final JavaMailSender javaMailSender;
     private final PasswordEncoder passwordEncoder;
+    private final ModelMapper modelMapper;
 
     public Account processNewAccount(SignUpForm signUpForm) {
         //detached 상태가 아닌 persist 상태를 만들기 위해 @Transactional 로 만들었다.
@@ -86,11 +88,9 @@ public class AccountService implements UserDetailsService {
     }
 
     public void updateProfile(Account account, Profile profile) {
-        account.setUrl(profile.getUrl());
-        account.setOccupation(profile.getOccupation());
-        account.setBio(profile.getBio());
-        account.setLocation(profile.getLocation());
-        account.setProfileImage(profile.getProfileImage());
+        //map 메소드는 소스에 있는 데이터를 목적지에 복사해준다.
+        //굳이 set get 안해줘도 된다는 이야기다.
+        modelMapper.map(profile, account);
         //Detached 객체를 기존과 merge
         accountRepository.save(account);
         // TODO 문제가 하나 더 남았습니다.
@@ -102,12 +102,7 @@ public class AccountService implements UserDetailsService {
     }
 
     public void updateNotifications(Account account, Notifications notifications) {
-        account.setCafeCreatedByEmail(notifications.isCafeCreatedByEmail());
-        account.setCafeCreatedByWeb(notifications.isCafeCreatedByWeb());
-        account.setCafeEnrollmentResultByEmail(notifications.isCafeEnrollmentResultByEmail());
-        account.setCafeEnrollmentResultByWeb(notifications.isCafeEnrollmentResultByWeb());
-        account.setCafeUpdatedByEmail(notifications.isCafeUpdatedByEmail());
-        account.setCafeUpdatedByWeb(notifications.isCafeUpdatedByWeb());
+        modelMapper.map(notifications, account);
         accountRepository.save(account);
     }
 }
