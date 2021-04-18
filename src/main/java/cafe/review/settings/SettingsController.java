@@ -3,23 +3,20 @@ package cafe.review.settings;
 import cafe.review.account.AccountService;
 import cafe.review.account.CurrentUser;
 import cafe.review.domain.Account;
-import cafe.review.settings.form.NicknameForm;
-import cafe.review.settings.form.Notifications;
-import cafe.review.settings.form.PasswordForm;
-import cafe.review.settings.form.Profile;
+import cafe.review.domain.Tag;
+import cafe.review.settings.form.*;
 import cafe.review.settings.validator.NicknameValidator;
 import cafe.review.settings.validator.PasswordFormValidator;
+import cafe.review.tag.TagRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.InitBinder;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
@@ -36,9 +33,12 @@ public class SettingsController {
     static final String SETTINGS_NOTIFICATIONS_URL = "/" + SETTINGS_NOTIFICATIONS_VIEW_NAME;
     static final String SETTINGS_ACCOUNT_VIEW_NAME = "settings/account";
     static final String SETTINGS_ACCOUNT_URL = "/" + SETTINGS_ACCOUNT_VIEW_NAME;
+    static final String SETTINGS_TAGS_VIEW_NAME = "settings/tags";
+    static final String SETTINGS_TAGS_URL = "/" + SETTINGS_TAGS_VIEW_NAME;
     private final AccountService accountService;
     private final ModelMapper modelMapper;
     private final NicknameValidator nicknameValidator;
+    private final TagRepository tagRepository;
 
     //바인딩 설정
     @InitBinder("passwordForm")
@@ -111,6 +111,26 @@ public class SettingsController {
         accountService.updateNotifications(account, notifications);
         redirectAttributes.addFlashAttribute("message", "알림 설정을 변경하였습니다.");
         return "redirect:" + SETTINGS_NOTIFICATIONS_URL;
+    }
+
+    @GetMapping(SETTINGS_TAGS_URL)
+    public String updateTags(@CurrentUser Account account, Model model) {
+        model.addAttribute(account);
+        return SETTINGS_TAGS_VIEW_NAME;
+    }
+
+    @PostMapping("/settings/tags/add")
+    @ResponseBody
+    public ResponseEntity addTag(@CurrentUser Account account, @RequestBody TagForm tagForm) {
+        String title = tagForm.getTagTitle();
+
+        Tag tag = tagRepository.findByTitle(title);
+        if (tag == null) {
+            tag = tagRepository.save(Tag.builder().title(tagForm.getTagTitle()).build());
+        }
+
+        accountService.addTag(account, tag);
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping(SETTINGS_ACCOUNT_URL)
