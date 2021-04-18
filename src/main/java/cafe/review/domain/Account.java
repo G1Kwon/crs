@@ -45,15 +45,15 @@ public class Account {
 
     private boolean cafeCreatedByEmail;
 
-    private boolean cafeCreatedByWeb;
+    private boolean cafeCreatedByWeb = true;
 
     private boolean cafeEnrollmentResultByEmail;
 
-    private boolean cafeEnrollmentResultByWeb;
+    private boolean cafeEnrollmentResultByWeb = true;
 
     private boolean cafeUpdatedByEmail;
 
-    private boolean cafeUpdatedByWeb;
+    private boolean cafeUpdatedByWeb = true;
 
     public void generateEmailCheckToken() {
         this.emailCheckToken = UUID.randomUUID().toString();

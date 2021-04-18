@@ -1,6 +1,7 @@
 package cafe.review.account;
 
 import cafe.review.domain.Account;
+import cafe.review.settings.Notifications;
 import cafe.review.settings.Profile;
 import lombok.RequiredArgsConstructor;
 import org.springframework.mail.SimpleMailMessage;
@@ -97,6 +98,16 @@ public class AccountService implements UserDetailsService {
 
     public void updatePassword(Account account, String newPassword) {
         account.setPassword(passwordEncoder.encode(newPassword));
+        accountRepository.save(account);
+    }
+
+    public void updateNotifications(Account account, Notifications notifications) {
+        account.setCafeCreatedByEmail(notifications.isCafeCreatedByEmail());
+        account.setCafeCreatedByWeb(notifications.isCafeCreatedByWeb());
+        account.setCafeEnrollmentResultByEmail(notifications.isCafeEnrollmentResultByEmail());
+        account.setCafeEnrollmentResultByWeb(notifications.isCafeEnrollmentResultByWeb());
+        account.setCafeUpdatedByEmail(notifications.isCafeUpdatedByEmail());
+        account.setCafeUpdatedByWeb(notifications.isCafeUpdatedByWeb());
         accountRepository.save(account);
     }
 }
