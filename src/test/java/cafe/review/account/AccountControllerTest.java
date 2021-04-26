@@ -1,6 +1,8 @@
 package cafe.review.account;
 
 import cafe.review.domain.Account;
+import cafe.review.mail.EmailMessage;
+import cafe.review.mail.EmailService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +35,7 @@ class AccountControllerTest {
     private AccountRepository accountRepository;
 
     @MockBean
-    JavaMailSender javaMailSender;
+    EmailService emailService;
 
     @Test @DisplayName("회원 가입 화면 보이는지 테스트")
     void signUpForm() throws Exception {
@@ -74,7 +76,7 @@ class AccountControllerTest {
         assertNotEquals(account.getPassword(), "12345678");
         assertNotNull(account.getEmailCheckToken());
         assertTrue(accountRepository.existsByEmail("g1.kwon@hyundai-autoever.com"));
-        then(javaMailSender).should().send(any(SimpleMailMessage.class));
+        then(emailService).should().sendEmail(any(EmailMessage.class));
     }
 
     @Test @DisplayName("인증 메일 확인 - 입력값 오류")
