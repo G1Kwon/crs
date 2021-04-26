@@ -25,7 +25,7 @@ public class HtmlEmailService implements EmailService{
             MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, false, "UTF-8");
             mimeMessageHelper.setTo(emailMessage.getTo());
             mimeMessageHelper.setSubject("카페 리뷰 시스템, 회원 가입 인증");
-            mimeMessageHelper.setText(emailMessage.getMessage(), false);
+            mimeMessageHelper.setText(emailMessage.getMessage(), true);
             javaMailSender.send(mimeMessage);
             log.info("sent email: {}", emailMessage.getMessage());
         } catch (MessagingException e) {
