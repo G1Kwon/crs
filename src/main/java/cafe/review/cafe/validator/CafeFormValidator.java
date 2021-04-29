@@ -20,8 +20,8 @@ public class CafeFormValidator implements Validator {
 
     @Override
     public void validate(Object target, Errors errors) {
-        CafeForm studyForm = (CafeForm) target;
-        if (cafeRepository.existsByPath(studyForm.getPath())) {
+        CafeForm cafeForm = (CafeForm) target;
+        if (cafeRepository.existsByPath(cafeForm.getPath())) {
             errors.rejectValue("path", "wrong.path", "해당 리뷰 경로값을 사용할 수 없습니다.");
         }
     }

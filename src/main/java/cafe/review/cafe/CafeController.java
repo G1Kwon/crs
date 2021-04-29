@@ -13,6 +13,7 @@ import org.springframework.validation.Errors;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import javax.validation.Valid;
@@ -24,12 +25,20 @@ import java.nio.charset.StandardCharsets;
 public class CafeController {
 
     private final CafeService cafeService;
+    private final CafeRepository cafeRepository;
     private final ModelMapper modelMapper;
     private final CafeFormValidator cafeFormValidator;
 
     @InitBinder("cafeForm")
-    public void studyFormInitBinder(WebDataBinder webDataBinder) {
+    public void cafeFormInitBinder(WebDataBinder webDataBinder) {
         webDataBinder.addValidators(cafeFormValidator);
+    }
+
+    @GetMapping("/cafe/{path}")
+    public String viewCafe(@CurrentUser Account account, @PathVariable String path, Model model) {
+        model.addAttribute(account);
+        model.addAttribute(cafeRepository.findByPath(path));
+        return "cafe/view";
     }
 
     @GetMapping("/new-cafe")

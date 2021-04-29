@@ -1,5 +1,6 @@
 package cafe.review.domain;
 
+import cafe.review.account.UserAccount;
 import lombok.*;
 
 import javax.persistence.*;
@@ -7,6 +8,11 @@ import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
+@NamedEntityGraph(name = "Cafe.withAll", attributeNodes = {
+        @NamedAttributeNode("tags"),
+        @NamedAttributeNode("zones"),
+        @NamedAttributeNode("reviewers"),
+        @NamedAttributeNode("members")})
 @Entity
 @Getter @Setter @EqualsAndHashCode(of = "id")
 @Builder @AllArgsConstructor @NoArgsConstructor
@@ -56,5 +62,19 @@ public class Cafe {
 
     public void addReviewer(Account account) {
         this.reviewers.add(account);
+    }
+
+    public boolean isJoinable(UserAccount userAccount) {
+        Account account = userAccount.getAccount();
+        return this.isPublished() && this.isRecruiting()
+                && !this.members.contains(account) && !this.reviewers.contains(account);
+    }
+
+    public boolean isMember(UserAccount userAccount) {
+        return this.members.contains(userAccount.getAccount());
+    }
+
+    public boolean isReviewers(UserAccount userAccount) {
+        return this.reviewers.contains(userAccount.getAccount());
     }
 }
