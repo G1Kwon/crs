@@ -77,4 +77,8 @@ public class Cafe {
     public boolean isReviewers(UserAccount userAccount) {
         return this.reviewers.contains(userAccount.getAccount());
     }
+
+    public String getImage() {
+        return image != null ? image : "/images/default_banner.png";
+    }
 }

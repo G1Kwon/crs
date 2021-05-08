@@ -53,7 +53,38 @@ public class CafeSettingController {
         return "redirect:/cafe/" + getPath(path) + "/settings/description";
     }
 
+    @GetMapping("/banner")
+    public String cafeImageForm(@CurrentAccount Account account, @PathVariable String path, Model model) {
+        Cafe cafe = cafeService.getCafeToUpdate(account, path);
+        model.addAttribute(account);
+        model.addAttribute(cafe);
+        return "cafe/settings/banner";
+    }
+
+    @PostMapping("/banner")
+    public String cafeImageSubmit(@CurrentAccount Account account, @PathVariable String path,
+                                  String image, RedirectAttributes redirectAttributes) {
+        Cafe cafe = cafeService.getCafeToUpdate(account, path);
+        cafeService.updateCafeImage(cafe, image);
+        redirectAttributes.addFlashAttribute("message", "카페리뷰 이미지를 수정했습니다.");
+        return "redirect:/cafe/" + getPath(path) + "/settings/banner";
+    }
+
     private String getPath(String path) {
         return URLEncoder.encode(path, StandardCharsets.UTF_8);
+    }
+
+    @PostMapping("/banner/enable")
+    public String enableCafeBanner(@CurrentAccount Account account, @PathVariable String path) {
+        Cafe cafe = cafeService.getCafeToUpdate(account, path);
+        cafeService.enableCafeBanner(cafe);
+        return "redirect:/cafe/" + getPath(path) + "/settings/banner";
+    }
+
+    @PostMapping("/banner/disable")
+    public String disableCafeBanner(@CurrentAccount Account account, @PathVariable String path) {
+        Cafe cafe = cafeService.getCafeToUpdate(account, path);
+        cafeService.disableCafeBanner(cafe);
+        return "redirect:/cafe/" + getPath(path) + "/settings/banner";
     }
 }

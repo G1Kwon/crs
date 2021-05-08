@@ -42,4 +42,16 @@ public class CafeService {
     public void updateCafeDescription(Cafe cafe, CafeDescriptionForm cafeDescriptionForm) {
         modelMapper.map(cafeDescriptionForm, cafe);
     }
+
+    public void updateCafeImage(Cafe cafe, String image) {
+        cafe.setImage(image);
+    }
+
+    public void enableCafeBanner(Cafe cafe) {
+        cafe.setUseBanner(true);
+    }
+
+    public void disableCafeBanner(Cafe cafe) {
+        cafe.setUseBanner(false);
+    }
 }
