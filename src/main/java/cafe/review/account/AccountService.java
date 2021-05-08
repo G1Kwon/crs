@@ -23,7 +23,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
-import org.thymeleaf.context.IContext;
 
 import java.util.List;
 import java.util.Optional;
@@ -44,6 +43,7 @@ public class AccountService implements UserDetailsService {
 
     public Account processNewAccount(SignUpForm signUpForm) {
         //detached 상태가 아닌 persist 상태를 만들기 위해 @Transactional 로 만들었다.
+        //에러가 나면 새로운 계정의 transaction은 롤백이 된다.
         Account newAccount = saveNewAccount(signUpForm);
         sendSignUpConfirmEmail(newAccount);
         return newAccount;
@@ -175,5 +175,13 @@ public class AccountService implements UserDetailsService {
     public void removeZone(Account account, Zone zone) {
         Optional<Account> byId = accountRepository.findById(account.getId());
         byId.ifPresent(a -> a.getZones().remove(zone));
+    }
+
+    public Account getAccount(String nickname) {
+        Account account = accountRepository.findByNickname(nickname);
+        if (account == null) {
+            throw new IllegalArgumentException(nickname + "에 해당하는 사용자가 없습니다.");
+        }
+        return account;
     }
 }

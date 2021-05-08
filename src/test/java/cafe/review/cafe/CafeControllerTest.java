@@ -50,7 +50,7 @@ class CafeControllerTest {
     @Test
     @WithAccount("g1Kwon")
     @DisplayName("리뷰 개설 - 완료")
-    void createStudy_success() throws Exception {
+    void createCafe_success() throws Exception {
         mockMvc.perform(post("/new-cafe")
                 .param("path", "test-path")
                 .param("title", "cafe title")
@@ -60,10 +60,10 @@ class CafeControllerTest {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/cafe/test-path"));
 
-        Cafe study = cafeRepository.findByPath("test-path");
-        assertNotNull(study);
+        Cafe cafe = cafeRepository.findByPath("test-path");
+        assertNotNull(cafe);
         Account account = accountRepository.findByNickname("g1Kwon");
-        assertTrue(study.getReviewers().contains(account));
+        assertTrue(cafe.getReviewers().contains(account));
     }
 
     @Test
@@ -92,7 +92,7 @@ class CafeControllerTest {
     void viewReview() throws Exception {
         Cafe cafe = new Cafe();
         cafe.setPath("test-path");
-        cafe.setTitle("test study");
+        cafe.setTitle("test cafe");
         cafe.setShortDescription("short description");
         cafe.setFullDescription("<p>full description</p>");
 

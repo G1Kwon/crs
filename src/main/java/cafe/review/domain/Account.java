@@ -80,4 +80,8 @@ public class Account {
     public boolean canSendConfirmEmail() {
         return this.emailCheckTokenGeneratedAt.isBefore(LocalDateTime.now().minusHours(1));
     }
+
+    public boolean isReviewerOf(Cafe cafe) {
+        return cafe.getReviewers().contains(this);
+    }
 }

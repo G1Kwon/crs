@@ -36,8 +36,9 @@ public class CafeController {
 
     @GetMapping("/cafe/{path}")
     public String viewCafe(@CurrentUser Account account, @PathVariable String path, Model model) {
+        Cafe cafe = cafeService.getCafe(path);
         model.addAttribute(account);
-        model.addAttribute(cafeRepository.findByPath(path));
+        model.addAttribute(cafe);
         return "cafe/view";
     }
 
@@ -60,8 +61,9 @@ public class CafeController {
 
     @GetMapping("/cafe/{path}/members")
     public String viewCafeMembers(@CurrentUser Account account, @PathVariable String path, Model model) {
+        Cafe cafe = cafeService.getCafe(path);
         model.addAttribute(account);
-        model.addAttribute(cafeRepository.findByPath(path));
+        model.addAttribute(cafe);
         return "cafe/members";
     }
 }
