@@ -49,11 +49,19 @@ public class CafeController {
     }
 
     @PostMapping("/new-cafe")
-    public String newCafeSubmit(@CurrentUser Account account, @Valid CafeForm cafeForm, Errors errors) {
+    public String newCafeSubmit(@CurrentUser Account account, @Valid CafeForm cafeForm, Errors errors, Model model) {
         if (errors.hasErrors()) {
+            model.addAttribute(account);
             return "cafe/form";
         }
         Cafe newCafe = cafeService.createNewCafeReview(modelMapper.map(cafeForm, Cafe.class), account);
         return "redirect:/cafe/" + URLEncoder.encode(newCafe.getPath(), StandardCharsets.UTF_8);
+    }
+
+    @GetMapping("/cafe/{path}/members")
+    public String viewCafeMembers(@CurrentUser Account account, @PathVariable String path, Model model) {
+        model.addAttribute(account);
+        model.addAttribute(cafeRepository.findByPath(path));
+        return "cafe/members";
     }
 }

@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments.html :: head"></head>
+<body class="bg-light">
+<div th:replace="fragments.html :: main-nav"></div>
+<div th:replace="fragments.html :: cafe-banner"></div>
+<div class="container">
+  <div th:replace="fragments.html :: cafe-info"></div>
+  <div th:replace="fragments.html :: cafe-menu(cafeMenu='members')"></div>
+
+  <div th:replace="fragments.html :: member-list(members=${cafe.reviewers},isReviewers=${true})"></div>
+  <div th:replace="fragments.html :: member-list(members=${cafe.members},isReviewers=${false})"></div>
+
+  <div th:replace="fragments.html :: footer"></div>
+</div>
+<script type="application/javascript">
+        $(function () {
+            $('[data-toggle="tooltip"]').tooltip()
+        })
+    </script>
+</body>
+</html>
