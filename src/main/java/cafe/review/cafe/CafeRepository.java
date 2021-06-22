@@ -18,4 +18,7 @@ public interface CafeRepository extends JpaRepository<Cafe, Long> {
 
     @EntityGraph(value = "Cafe.withZonesAndReviewers", type = EntityGraph.EntityGraphType.FETCH)
     Cafe findAccountWithZonesByPath(String path);
+
+    @EntityGraph(value = "Cafe.withReviewers", type = EntityGraph.EntityGraphType.FETCH)
+    Cafe findCafeWithReviewersByPath(String path);
 }

@@ -83,6 +83,13 @@ public class CafeService {
         return cafe;
     }
 
+    public Cafe getCafeToUpdateStatus(Account account, String path) {
+        Cafe cafe = cafeRepository.findCafeWithReviewersByPath(path);
+        checkIfExistingCafe(path, cafe);
+        checkIfReviewer(account, cafe);
+        return cafe;
+    }
+
     private void checkIfReviewer(Account account, Cafe cafe) {
         if (!account.isReviewerOf(cafe)){
             throw new AccessDeniedException("해당 기능을 사용할 수 없습니다.");
@@ -93,5 +100,21 @@ public class CafeService {
         if (cafe == null) {
             throw new IllegalArgumentException(path + "에 해당하는 카페 리뷰가 없습니다.");
         }
+    }
+
+    public void publish(Cafe cafe) {
+        cafe.publish();
+    }
+
+    public void close(Cafe cafe) {
+        cafe.close();
+    }
+
+    public void startRecruit(Cafe cafe) {
+        cafe.startRecruit();
+    }
+
+    public void stopRecruit(Cafe cafe) {
+        cafe.stopRecruit();
     }
 }

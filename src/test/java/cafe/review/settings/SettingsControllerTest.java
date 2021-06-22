@@ -134,19 +134,19 @@ class SettingsControllerTest {
 
         Tag newTag = tagRepository.findByTitle("newTag");
         assertNotNull(newTag);
-        Account keesun = accountRepository.findByNickname("g1Kwon");
-        assertTrue(keesun.getTags().contains(newTag));
+        Account g1Kwon = accountRepository.findByNickname("g1Kwon");
+        assertTrue(g1Kwon.getTags().contains(newTag));
     }
 
     @WithAccount("g1Kwon")
     @DisplayName("계정에 태그 삭제")
     @Test
     void removeTag() throws Exception {
-        Account keesun = accountRepository.findByNickname("g1Kwon");
+        Account g1Kwon = accountRepository.findByNickname("g1Kwon");
         Tag newTag = tagRepository.save(Tag.builder().title("newTag").build());
-        accountService.addTag(keesun, newTag);
+        accountService.addTag(g1Kwon, newTag);
 
-        assertTrue(keesun.getTags().contains(newTag));
+        assertTrue(g1Kwon.getTags().contains(newTag));
 
         TagForm tagForm = new TagForm();
         tagForm.setTagTitle("newTag");
@@ -157,7 +157,7 @@ class SettingsControllerTest {
                 .with(csrf()))
                 .andExpect(status().isOk());
 
-        assertFalse(keesun.getTags().contains(newTag));
+        assertFalse(g1Kwon.getTags().contains(newTag));
     }
 
     @WithAccount("g1Kwon")
@@ -222,8 +222,8 @@ class SettingsControllerTest {
                 .andExpect(redirectedUrl(ROOT + SETTINGS + PROFILE))
                 .andExpect(flash().attributeExists("message"));
 
-        Account keesun = accountRepository.findByNickname("g1Kwon");
-        assertEquals(bio, keesun.getBio());
+        Account g1Kwon = accountRepository.findByNickname("g1Kwon");
+        assertEquals(bio, g1Kwon.getBio());
     }
 
     @WithAccount("g1Kwon")
@@ -240,8 +240,8 @@ class SettingsControllerTest {
                 .andExpect(model().attributeExists("profile"))
                 .andExpect(model().hasErrors());
 
-        Account keesun = accountRepository.findByNickname("g1Kwon");
-        assertNull(keesun.getBio());
+        Account g1Kwon = accountRepository.findByNickname("g1Kwon");
+        assertNull(g1Kwon.getBio());
     }
 
     @WithAccount("g1Kwon")
@@ -266,8 +266,8 @@ class SettingsControllerTest {
                 .andExpect(redirectedUrl(ROOT + SETTINGS + PASSWORD))
                 .andExpect(flash().attributeExists("message"));
 
-        Account keesun = accountRepository.findByNickname("g1Kwon");
-        assertTrue(passwordEncoder.matches("12345678", keesun.getPassword()));
+        Account g1Kwon = accountRepository.findByNickname("g1Kwon");
+        assertTrue(passwordEncoder.matches("12345678", g1Kwon.getPassword()));
     }
 
     @WithAccount("g1Kwon")

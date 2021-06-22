@@ -179,4 +179,57 @@ public class CafeSettingController {
         cafeService.removeZone(cafe, zone);
         return ResponseEntity.ok().build();
     }
+    @GetMapping("/cafe")
+    public String cafeSettingForm(@CurrentAccount Account account, @PathVariable String path, Model model) {
+        Cafe cafe = cafeService.getCafeToUpdate(account, path);
+        model.addAttribute(account);
+        model.addAttribute(cafe);
+        return "cafe/settings/cafe";
+    }
+
+    @PostMapping("/cafe/publish")
+    public String publishCafe(@CurrentAccount Account account, @PathVariable String path,
+                               RedirectAttributes attributes) {
+        Cafe cafe = cafeService.getCafeToUpdateStatus(account, path);
+        cafeService.publish(cafe);
+        attributes.addFlashAttribute("message", "카페리뷰를 공개했습니다.");
+        return "redirect:/cafe/" + getPath(path) + "/settings/cafe";
+    }
+
+    @PostMapping("/cafe/close")
+    public String closeCafe(@CurrentAccount Account account, @PathVariable String path,
+                             RedirectAttributes attributes) {
+        Cafe cafe = cafeService.getCafeToUpdateStatus(account, path);
+        cafeService.close(cafe);
+        attributes.addFlashAttribute("message", "카페리뷰를 종료했습니다.");
+        return "redirect:/cafe/" + getPath(path) + "/settings/cafe";
+    }
+
+    @PostMapping("/recruit/start")
+    public String startRecruit(@CurrentAccount Account account, @PathVariable String path, Model model,
+                               RedirectAttributes attributes) {
+        Cafe cafe = cafeService.getCafeToUpdateStatus(account, path);
+        if (!cafe.canUpdateRecruiting()) {
+            attributes.addFlashAttribute("message", "1시간 안에 인원 모집 설정을 여러번 변경할 수 없습니다.");
+            return "redirect:/cafe/" + getPath(path) + "/settings/cafe";
+        }
+
+        cafeService.startRecruit(cafe);
+        attributes.addFlashAttribute("message", "인원 모집을 시작합니다.");
+        return "redirect:/cafe/" + getPath(path) + "/settings/cafe";
+    }
+
+    @PostMapping("/recruit/stop")
+    public String stopRecruit(@CurrentAccount Account account, @PathVariable String path, Model model,
+                              RedirectAttributes attributes) {
+        Cafe cafe = cafeService.getCafeToUpdate(account, path);
+        if (!cafe.canUpdateRecruiting()) {
+            attributes.addFlashAttribute("message", "1시간 안에 인원 모집 설정을 여러번 변경할 수 없습니다.");
+            return "redirect:/cafe/" + getPath(path) + "/settings/cafe";
+        }
+
+        cafeService.stopRecruit(cafe);
+        attributes.addFlashAttribute("message", "인원 모집을 종료합니다.");
+        return "redirect:/cafe/" + getPath(path) + "/settings/cafe";
+    }
 }
