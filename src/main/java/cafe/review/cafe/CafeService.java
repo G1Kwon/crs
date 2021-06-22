@@ -139,4 +139,12 @@ public class CafeService {
     public void updateCafeTitle(Cafe cafe, String newTitle) {
         cafe.setTitle(newTitle);
     }
+
+    public void remove(Cafe cafe) {
+        if (cafe.isRemovable()) {
+            cafeRepository.delete(cafe);
+        } else {
+            throw new IllegalArgumentException("카페리뷰를 삭제할 수 없습니다.");
+        }
+    }
 }

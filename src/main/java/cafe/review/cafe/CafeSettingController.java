@@ -264,4 +264,11 @@ public class CafeSettingController {
         attributes.addFlashAttribute("message", "카페리뷰 이름을 수정했습니다.");
         return "redirect:/cafe/" + getPath(path) + "/settings/cafe";
     }
+
+    @PostMapping("/cafe/remove")
+    public String removeCafe(@CurrentAccount Account account, @PathVariable String path, Model model) {
+        Cafe cafe = cafeService.getCafeToUpdateStatus(account, path);
+        cafeService.remove(cafe);
+        return "redirect:/";
+    }
 }

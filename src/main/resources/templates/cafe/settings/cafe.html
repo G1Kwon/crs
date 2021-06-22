@@ -61,7 +61,7 @@
         <h5 class="col-sm-12">팀원 모집</h5>
         <form class="col-sm-12" action="#" th:action="@{'/cafe/' + ${cafe.getPath()} + '/settings/recruit/stop'}" method="post" novalidate>
           <div class="alert alert-primary" role="alert">
-            팀원 모집을 중답합니다.<br/>
+            팀원 모집을 중단합니다.<br/>
             팀원 충원이 필요할 때 다시 팀원 모집을 시작할 수 있습니다.<br/>
             팀원 모집 정보는 1시간에 한번만 바꿀 수 있습니다.
           </div>
@@ -74,7 +74,8 @@
       <hr th:if="${!cafe.closed}"/>
       <div class="row" th:if="${!cafe.closed}">
         <h5 class="col-sm-12">카페리뷰 경로</h5>
-        <form class="col-sm-12 needs-validation" action="#" th:action="@{'/cafe/' + ${cafe.path} + '/settings/cafe/path'}" method="post" novalidate>
+        <form class="col-sm-12 needs-validation" action="#" th:action="@{'/cafe/' + ${cafe.path} + '/settings/cafe/path'}"
+              method="post" novalidate>
           <div class="alert alert-warning" role="alert">
             카페리뷰 경로를 수정하면 이전에 사용하던 경로로 카페리뷰에 접근할 수 없으니 주의하세요. <br/>
           </div>
@@ -117,7 +118,7 @@
       </div>
 
       <hr/>
-      <div class="row">
+      <div class="row" th:if="${cafe.isRemovable()}">
         <h5 class="col-sm-12 text-danger">카페리뷰 삭제</h5>
         <form class="col-sm-12" action="#" th:action="@{'/cafe/' + ${cafe.getPath()} + '/settings/cafe/remove'}" method="post" novalidate>
           <div class="alert alert-danger" role="alert">
@@ -131,6 +132,17 @@
           </div>
           <div class="form-group">
             <button class="btn btn-outline-danger" type="submit" aria-describedby="submitHelp">카페리뷰 삭제</button>
+          </div>
+        </form>
+      </div>
+      <div class="row" th:if="${!cafe.isRemovable()}">
+        <h5 class="col-sm-12 text-danger">카페리뷰 삭제</h5>
+        <form class="col-sm-12" action="#" th:action="@{'/cafe/' + ${cafe.getPath()} + '/settings/cafe/remove'}" method="post" novalidate>
+          <div class="alert alert-danger" role="alert">
+            공개 중이고 모임을 했던 카페리뷰는 삭제할 수 없습니다.
+          </div>
+          <div class="form-group">
+            <button class="btn btn-outline-danger" type="submit" aria-describedby="submitHelp" disabled>카페리뷰 삭제</button>
           </div>
         </form>
       </div>
