@@ -11,6 +11,8 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import static cafe.review.cafe.form.CafeForm.VALID_PATH_PATTERN;
+
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -116,5 +118,25 @@ public class CafeService {
 
     public void stopRecruit(Cafe cafe) {
         cafe.stopRecruit();
+    }
+
+    public boolean isValidPath(String newPath) {
+        if (!newPath.matches(VALID_PATH_PATTERN)) {
+            return false;
+        }
+
+        return !cafeRepository.existsByPath(newPath);
+    }
+
+    public void updateCafePath(Cafe cafe, String newPath) {
+        cafe.setPath(newPath);
+    }
+
+    public boolean isValidTitle(String newTitle) {
+        return newTitle.length() <= 50;
+    }
+
+    public void updateCafeTitle(Cafe cafe, String newTitle) {
+        cafe.setTitle(newTitle);
     }
 }

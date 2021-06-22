@@ -232,4 +232,36 @@ public class CafeSettingController {
         attributes.addFlashAttribute("message", "인원 모집을 종료합니다.");
         return "redirect:/cafe/" + getPath(path) + "/settings/cafe";
     }
+
+    @PostMapping("/cafe/path")
+    public String updateCafePath(@CurrentAccount Account account, @PathVariable String path, String newPath,
+                                  Model model, RedirectAttributes attributes) {
+        Cafe cafe = cafeService.getCafeToUpdateStatus(account, path);
+        if (!cafeService.isValidPath(newPath)) {
+            model.addAttribute(account);
+            model.addAttribute(cafe);
+            model.addAttribute("cafePathError", "해당 카페리뷰 경로는 사용할 수 없습니다. 다른 값을 입력하세요.");
+            return "cafe/settings/cafe";
+        }
+
+        cafeService.updateCafePath(cafe, newPath);
+        attributes.addFlashAttribute("message", "카페리뷰 경로를 수정했습니다.");
+        return "redirect:/cafe/" + getPath(newPath) + "/settings/cafe";
+    }
+
+    @PostMapping("/cafe/title")
+    public String updateCafeTitle(@CurrentAccount Account account, @PathVariable String path, String newTitle,
+                                   Model model, RedirectAttributes attributes) {
+        Cafe cafe = cafeService.getCafeToUpdateStatus(account, path);
+        if (!cafeService.isValidTitle(newTitle)) {
+            model.addAttribute(account);
+            model.addAttribute(cafe);
+            model.addAttribute("cafeTitleError", "카페리뷰 이름을 다시 입력하세요.");
+            return "cafe/settings/cafe";
+        }
+
+        cafeService.updateCafeTitle(cafe, newTitle);
+        attributes.addFlashAttribute("message", "카페리뷰 이름을 수정했습니다.");
+        return "redirect:/cafe/" + getPath(path) + "/settings/cafe";
+    }
 }
