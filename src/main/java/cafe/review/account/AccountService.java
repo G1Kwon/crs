@@ -148,6 +148,7 @@ public class AccountService implements UserDetailsService {
     }
 
     public void addTag(Account account, Tag tag) {
+        //여기서 Account 는 persistent 상태
         Optional<Account> byId = accountRepository.findById(account.getId());
         byId.ifPresent(a -> a.getTags().add(tag));
     }

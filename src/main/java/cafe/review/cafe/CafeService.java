@@ -3,6 +3,8 @@ package cafe.review.cafe;
 import cafe.review.cafe.form.CafeDescriptionForm;
 import cafe.review.domain.Account;
 import cafe.review.domain.Cafe;
+import cafe.review.domain.Tag;
+import cafe.review.domain.Zone;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.access.AccessDeniedException;
@@ -25,17 +27,13 @@ public class CafeService {
 
     public Cafe getCafeToUpdate(Account account, String path) {
         Cafe cafe = this.getCafe(path);
-        if (!account.isReviewerOf(cafe)){
-            throw new AccessDeniedException("해당 기능을 사용할 수 없습니다.");
-        }
+        checkIfReviewer(account, cafe);
         return cafe;
     }
 
     public Cafe getCafe(String path) {
         Cafe cafe = this.cafeRepository.findByPath(path);
-        if (cafe == null) {
-            throw new IllegalArgumentException(path + "에 해당하는 카페 리뷰가 없습니다.");
-        }
+        checkIfExistingCafe(path, cafe);
         return cafe;
     }
 
@@ -53,5 +51,47 @@ public class CafeService {
 
     public void disableCafeBanner(Cafe cafe) {
         cafe.setUseBanner(false);
+    }
+
+    public void addTag(Cafe cafe, Tag tag) {
+        cafe.getTags().add(tag);
+    }
+
+    public void removeTag(Cafe cafe, Tag tag) {
+        cafe.getTags().remove(tag);
+    }
+
+    public void addZone(Cafe cafe, Zone zone) {
+        cafe.getZones().add(zone);
+    }
+
+    public void removeZone(Cafe cafe, Zone zone) {
+        cafe.getZones().remove(zone);
+    }
+
+    public Cafe getCafeToUpdateTag(Account account, String path) {
+        Cafe cafe = cafeRepository.findAccountWithTagsByPath(path);
+        checkIfExistingCafe(path, cafe);
+        checkIfReviewer(account, cafe);
+        return cafe;
+    }
+
+    public Cafe getCafeToUpdateZone(Account account, String path) {
+        Cafe cafe = cafeRepository.findAccountWithZonesByPath(path);
+        checkIfExistingCafe(path, cafe);
+        checkIfReviewer(account, cafe);
+        return cafe;
+    }
+
+    private void checkIfReviewer(Account account, Cafe cafe) {
+        if (!account.isReviewerOf(cafe)){
+            throw new AccessDeniedException("해당 기능을 사용할 수 없습니다.");
+        }
+    }
+
+    private void checkIfExistingCafe(String path, Cafe cafe) {
+        if (cafe == null) {
+            throw new IllegalArgumentException(path + "에 해당하는 카페 리뷰가 없습니다.");
+        }
     }
 }

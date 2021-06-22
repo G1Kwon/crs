@@ -83,18 +83,18 @@ class SettingsControllerTest {
                 .with(csrf()))
                 .andExpect(status().isOk());
 
-        Account keesun = accountRepository.findByNickname("g1Kwon");
+        Account g1kwon = accountRepository.findByNickname("g1Kwon");
         Zone zone = zoneRepository.findByCityAndProvince(testZone.getCity(), testZone.getProvince());
-        assertTrue(keesun.getZones().contains(zone));
+        assertTrue(g1kwon.getZones().contains(zone));
     }
 
     @WithAccount("g1Kwon")
     @DisplayName("계정의 지역 정보 추가")
     @Test
     void removeZone() throws Exception {
-        Account keesun = accountRepository.findByNickname("g1Kwon");
+        Account g1kwon = accountRepository.findByNickname("g1Kwon");
         Zone zone = zoneRepository.findByCityAndProvince(testZone.getCity(), testZone.getProvince());
-        accountService.addZone(keesun, zone);
+        accountService.addZone(g1kwon, zone);
 
         ZoneForm zoneForm = new ZoneForm();
         zoneForm.setZoneName(testZone.toString());
@@ -105,7 +105,7 @@ class SettingsControllerTest {
                 .with(csrf()))
                 .andExpect(status().isOk());
 
-        assertFalse(keesun.getZones().contains(zone));
+        assertFalse(g1kwon.getZones().contains(zone));
     }
 
     @WithAccount("g1Kwon")

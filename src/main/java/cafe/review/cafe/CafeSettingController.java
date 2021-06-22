@@ -4,20 +4,29 @@ import cafe.review.account.CurrentAccount;
 import cafe.review.cafe.form.CafeDescriptionForm;
 import cafe.review.domain.Account;
 import cafe.review.domain.Cafe;
+import cafe.review.domain.Tag;
+import cafe.review.domain.Zone;
+import cafe.review.settings.form.TagForm;
+import cafe.review.settings.form.ZoneForm;
+import cafe.review.tag.TagRepository;
+import cafe.review.tag.TagService;
+import cafe.review.zone.ZoneRepository;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/cafe/{path}/settings")
@@ -25,7 +34,11 @@ import java.nio.charset.StandardCharsets;
 public class CafeSettingController {
 
     private final CafeService cafeService;
+    private final TagService tagService;
+    private final TagRepository tagRepository;
+    private final ZoneRepository zoneRepository;
     private final ModelMapper modelMapper;
+    private final ObjectMapper objectMapper;
 
     @GetMapping("/description")
     public String viewCafeSetting(@CurrentAccount Account account, @PathVariable String path, Model model) {
@@ -86,5 +99,84 @@ public class CafeSettingController {
         Cafe cafe = cafeService.getCafeToUpdate(account, path);
         cafeService.disableCafeBanner(cafe);
         return "redirect:/cafe/" + getPath(path) + "/settings/banner";
+    }
+
+    @GetMapping("/tags")
+    public String cafeTagsForm(@CurrentAccount Account account, @PathVariable String path, Model model)
+            throws JsonProcessingException {
+        Cafe cafe = cafeService.getCafeToUpdate(account, path);
+        model.addAttribute(account);
+        model.addAttribute(cafe);
+
+        model.addAttribute("tags", cafe.getTags().stream()
+                .map(Tag::getTitle).collect(Collectors.toList()));
+        List<String> allTagTitles = tagRepository.findAll().stream()
+                .map(Tag::getTitle).collect(Collectors.toList());
+        model.addAttribute("whitelist", objectMapper.writeValueAsString(allTagTitles));
+        return "cafe/settings/tags";
+    }
+
+    @PostMapping("/tags/add")
+    @ResponseBody
+    public ResponseEntity addTag (@CurrentAccount Account account, @PathVariable String path,
+                                  @RequestBody TagForm tagForm) {
+        // cafe 객체는 persistent 상태이다. 영속성 컨텍스트가 열려 있는 상태이기에
+        Cafe cafe = cafeService.getCafeToUpdateTag(account, path);
+        // tag 객체는 persistent 상태이다. 영속성 컨텍스트가 열려 있는 상태이기에
+        Tag tag = tagService.findOrCreateNew(tagForm.getTagTitle());
+        cafeService.addTag(cafe, tag);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/tags/remove")
+    @ResponseBody
+    public ResponseEntity removeTag(@CurrentAccount Account account, @PathVariable String path,
+                                   @RequestBody TagForm tagForm) {
+        Cafe cafe = cafeService.getCafeToUpdateTag(account, path);
+        Tag tag = tagRepository.findByTitle(tagForm.getTagTitle());
+        if (tag == null) {
+            return ResponseEntity.badRequest().build();
+        }
+        cafeService.removeTag(cafe, tag);
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/zones")
+    public String cafeZonesForm(@CurrentAccount Account account, @PathVariable String path, Model model)
+            throws JsonProcessingException {
+        Cafe cafe = cafeService.getCafeToUpdate(account, path);
+        model.addAttribute(account);
+        model.addAttribute(cafe);
+        model.addAttribute("zones", cafe.getZones().stream()
+                .map(Zone::toString).collect(Collectors.toList()));
+        List<String> allZones = zoneRepository.findAll().stream().map(Zone::toString).collect(Collectors.toList());
+        model.addAttribute("whitelist", objectMapper.writeValueAsString(allZones));
+        return "cafe/settings/zones";
+    }
+
+    @PostMapping("/zones/add")
+    @ResponseBody
+    public ResponseEntity addZone (@CurrentAccount Account account, @PathVariable String path,
+                                   @RequestBody ZoneForm zoneForm) {
+        Cafe cafe = cafeService.getCafeToUpdateZone(account, path);
+        Zone zone = zoneRepository.findByCityAndProvince(zoneForm.getCityName(), zoneForm.getProvinceName());
+        if (zone == null) {
+            return ResponseEntity.badRequest().build();
+        }
+        cafeService.addZone(cafe, zone);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/zones/remove")
+    @ResponseBody
+    public ResponseEntity removeZone(@CurrentAccount Account account, @PathVariable String path,
+                                    @RequestBody ZoneForm zoneForm) {
+        Cafe cafe = cafeService.getCafeToUpdateZone(account, path);
+        Zone zone = zoneRepository.findByCityAndProvince(zoneForm.getCityName(), zoneForm.getProvinceName());
+        if (zone == null) {
+            return ResponseEntity.badRequest().build();
+        }
+        cafeService.removeZone(cafe, zone);
+        return ResponseEntity.ok().build();
     }
 }

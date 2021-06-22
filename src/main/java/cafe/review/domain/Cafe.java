@@ -13,6 +13,12 @@ import java.util.Set;
         @NamedAttributeNode("zones"),
         @NamedAttributeNode("reviewers"),
         @NamedAttributeNode("members")})
+@NamedEntityGraph(name = "Cafe.withTagsAndReviewers", attributeNodes = {
+        @NamedAttributeNode("tags"),
+        @NamedAttributeNode("reviewers")})
+@NamedEntityGraph(name = "Cafe.withZonesAndReviewers", attributeNodes = {
+        @NamedAttributeNode("zones"),
+        @NamedAttributeNode("reviewers")})
 @Entity
 @Getter @Setter @EqualsAndHashCode(of = "id")
 @Builder @AllArgsConstructor @NoArgsConstructor

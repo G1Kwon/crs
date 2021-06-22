@@ -81,6 +81,8 @@ public class AccountController {
     }
 
     @GetMapping("/profile/{nickname}")
+    //account 객체는 security context 에서 이전에 가지고 온 것이다. 세션에 남아 있는 것이지..
+    //영속성 컨텍스트는 모르는 녀석
     public String viewProfile(@PathVariable String nickname, Model model, @CurrentUser Account account) {
         Account accountToView = accountService.getAccount(nickname);
         model.addAttribute(accountToView);

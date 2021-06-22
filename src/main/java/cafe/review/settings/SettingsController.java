@@ -1,5 +1,6 @@
 package cafe.review.settings;
 
+import cafe.review.tag.TagService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import cafe.review.account.AccountService;
@@ -50,6 +51,7 @@ public class SettingsController {
     private final TagRepository tagRepository;
     private final ZoneRepository zoneRepository;
     private final ObjectMapper objectMapper;
+    private final TagService tagService;
 
     @InitBinder("passwordForm")
     public void passwordFormInitBinder(WebDataBinder webDataBinder) {
@@ -136,13 +138,9 @@ public class SettingsController {
 
     @PostMapping(TAGS + "/add")
     @ResponseBody
+    //account 객체는 detached 상태이다. 이것을 변경하려면 persistent 상태가 되어야 한다. 그렇게 하려면 디비에서 가지고 올때 persistent 상태로 와야한다.
     public ResponseEntity addTag(@CurrentAccount Account account, @RequestBody TagForm tagForm) {
-        String title = tagForm.getTagTitle();
-        Tag tag = tagRepository.findByTitle(title);
-        if (tag == null) {
-            tag = tagRepository.save(Tag.builder().title(title).build());
-        }
-
+        Tag tag = tagService.findOrCreateNew(tagForm.getTagTitle());
         accountService.addTag(account, tag);
         return ResponseEntity.ok().build();
     }

@@ -12,4 +12,10 @@ public interface CafeRepository extends JpaRepository<Cafe, Long> {
 
     @EntityGraph(value = "Cafe.withAll", type = EntityGraph.EntityGraphType.LOAD)
     Cafe findByPath(String path);
+
+    @EntityGraph(value = "Cafe.withTagsAndReviewers", type = EntityGraph.EntityGraphType.FETCH)
+    Cafe findAccountWithTagsByPath(String path);
+
+    @EntityGraph(value = "Cafe.withZonesAndReviewers", type = EntityGraph.EntityGraphType.FETCH)
+    Cafe findAccountWithZonesByPath(String path);
 }
