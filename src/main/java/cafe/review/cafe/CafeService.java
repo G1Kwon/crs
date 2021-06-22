@@ -147,4 +147,12 @@ public class CafeService {
             throw new IllegalArgumentException("카페리뷰를 삭제할 수 없습니다.");
         }
     }
+
+    public void addMember(Cafe cafe, Account account) {
+        cafe.addMember(account);
+    }
+
+    public void removeMember(Cafe cafe, Account account) {
+        cafe.removeMember(account);
+    }
 }

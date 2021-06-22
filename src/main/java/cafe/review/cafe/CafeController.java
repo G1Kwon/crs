@@ -1,5 +1,6 @@
 package cafe.review.cafe;
 
+import cafe.review.account.CurrentAccount;
 import cafe.review.account.CurrentUser;
 import cafe.review.cafe.form.CafeForm;
 import cafe.review.cafe.validator.CafeFormValidator;
@@ -65,5 +66,19 @@ public class CafeController {
         model.addAttribute(account);
         model.addAttribute(cafe);
         return "cafe/members";
+    }
+
+    @GetMapping("/cafe/{path}/join")
+    public String joinCafe(@CurrentAccount Account account, @PathVariable String path) {
+        Cafe cafe = cafeRepository.findCafeWithReviewersByPath(path);
+        cafeService.addMember(cafe, account);
+        return "redirect:/cafe/" + cafe.getEncodedPath() + "/members";
+    }
+
+    @GetMapping("/cafe/{path}/leave")
+    public String leaveCafe(@CurrentAccount Account account, @PathVariable String path) {
+        Cafe cafe = cafeRepository.findCafeWithReviewersByPath(path);
+        cafeService.removeMember(cafe, account);
+        return "redirect:/cafe/" + cafe.getEncodedPath() + "/members";
     }
 }
